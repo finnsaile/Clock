@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <ctime>
 #include <string>
+#include <iostream>
 
 class CClock : public sf::Drawable
 {

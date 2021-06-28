@@ -34,7 +34,7 @@ void CClock::initClock(sf::RenderWindow &window)
 void CClock::initDigitalClock()
 {
     //load font
-    digitalClockFont.loadFromFile("resources/fonts/digital7.ttf");
+    digitalClockFont.loadFromFile("resources/fonts/digital7_mono.ttf");
     //set font of clock string
     digitalClock.setFont(digitalClockFont);
     //set char size

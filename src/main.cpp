@@ -29,7 +29,15 @@ int main()
                 case sf::Event::Closed:
                     window.close();
                     break;
-
+                case sf::Event::KeyPressed:
+                    switch(event.key.code)
+                    {
+                        case sf::Keyboard::Escape:  
+                            window.close(); 
+                            break;
+                        default:
+                            break;
+                    }
                 default:
                     break;
             }     

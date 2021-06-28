@@ -4,16 +4,12 @@
 
 int main()
 {
-    //Enable antialiasing 
-    sf::ContextSettings settings;
-    settings.antialiasingLevel = 8;
-
     //get screen height
     unsigned int heigth = sf::VideoMode::getDesktopMode().height;
     //create non scalable window
-    sf::RenderWindow window(sf::VideoMode(heigth / 2, heigth / 2), "Clock", sf::Style::Titlebar | sf::Style::Close, settings);
+    sf::RenderWindow window(sf::VideoMode(heigth / 2, heigth / 2), "Clock", sf::Style::Titlebar | sf::Style::Close);
     //enable V-Sync
-    window.setVerticalSyncEnabled(true);
+    window.setFramerateLimit(10);
 
     //Create clock
     CClock clockObject(window);

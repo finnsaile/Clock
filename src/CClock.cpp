@@ -53,7 +53,7 @@ void CClock::initDigitalClock()
 void CClock::initClockCircle()
 {
     //high circle point count for smooth appearance
-    clockCircle.setPointCount(1000);
+    clockCircle.setPointCount(100);
     //set precalculated radius
     clockCircle.setRadius(clockRadius);
     //set precalculated origin
@@ -72,7 +72,7 @@ void CClock::initClockCircle()
 void CClock::initClockCenter()
 {
     //high circle point count for smooth appearance
-    clockCenter.setPointCount(1000);
+    clockCenter.setPointCount(100);
     //set precalculated radius
     clockCenter.setRadius(clockThickness);
     //set precalculated origin

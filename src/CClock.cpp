@@ -2,25 +2,19 @@
 
 //constructor takes reference to window
 CClock::CClock(sf::RenderWindow &window) :
-smoothClockBool(false)
+smoothClockBool(false),
+winSize(window.getSize())
 {
-    //initialise clock
-    initClock(window);
-    //call clock tick once
-    clockTick();
-}
-
-//method to initialise all clock elements
-void CClock::initClock(sf::RenderWindow &window)
-{ 
-    //safe window size in member variable
-    winSize = window.getSize();
     //calculatee clock radius and thickness
     clockRadius = winSize.y * 0.4;
     clockThickness = winSize.y / 100;
+    
     //calculate position of clock center
     position.x = winSize.x/2;
     position.y = winSize.y/2 + winSize.x/20;
+    
+    //number Array gets constructed
+    numberArray = new CClockNumberArray(winSize.y * 0.4, winSize.y / 100, sf::Vector2f(winSize.x/2, winSize.y/2 + winSize.x/20), sf::Vector2f(0, (winSize.y/100)/ 2));
     
     //call all initialisation methods
     initDigitalClock();
@@ -29,13 +23,18 @@ void CClock::initClock(sf::RenderWindow &window)
     initHourLine();
     initMinuteLine();
     initSecondLine();
+    
+    //call clock tick once
+    clockTick();
 }
 
+//getter function for smooth bool which decides if minute and hour arm move smooth or not
 bool CClock::getSmoothClockBool()
 {
     return smoothClockBool;
 }
 
+//setter function for smooth bool
 void CClock::setSmoothClockBool(bool in)
 {
     smoothClockBool = in;
@@ -166,11 +165,12 @@ void CClock::clockTick()
 
 //draw all objects in correct order
 void CClock::draw(sf::RenderTarget& target, sf::RenderStates states) const
-{
+{ 
     target.draw(digitalClock);
     target.draw(clockCircle);
+    target.draw(*numberArray);
     target.draw(clockCenter);
     target.draw(hourLine);
     target.draw(minuteLine);
-    target.draw(secondLine);
+    target.draw(secondLine);    
 }

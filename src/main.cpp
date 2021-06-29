@@ -13,6 +13,8 @@ int main()
     sf::RenderWindow window(sf::VideoMode(heigth / 2, heigth / 2), "Clock", sf::Style::Titlebar | sf::Style::Close, settings);
     //enable V-Sync
     window.setFramerateLimit(10);
+    //disable repeat key press on hold
+    window.setKeyRepeatEnabled(false);
 
     //Create clock
     CClock clockObject(window);
@@ -26,16 +28,19 @@ int main()
         {
             switch(event.type)
             {
+                //close window if close button is pressed
                 case sf::Event::Closed:
                     window.close();
                     break;
+                //switch case for key press
                 case sf::Event::KeyPressed:
                     switch(event.key.code)
                     {
+                        //close window if ESC is pressed
                         case sf::Keyboard::Escape:  
                             window.close(); 
                             break;
-                        
+                        //change smooth mode if R is pressed
                         case sf::Keyboard::R:
                         
                             if(clockObject.getSmoothClockBool() == false)

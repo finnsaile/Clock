@@ -1,9 +1,9 @@
 #pragma once
-
 #include <SFML/Graphics.hpp>
 #include <ctime>
 #include <string>
 #include <iostream>
+#include "CClockNumberArray.hpp"
 
 class CClock : public sf::Drawable
 {
@@ -13,11 +13,13 @@ class CClock : public sf::Drawable
         //changes elements each tick according to current time
         void clockTick();
         //used to initialise all elements
-        void initClock(sf::RenderWindow&);
         bool getSmoothClockBool();
-        void setSmoothClockBool(bool);
+        void setSmoothClockBool(bool in);
     private:
 
+        //Array Object for 12 numbers
+        CClockNumberArray *numberArray;
+        
         //variables for calculating correct position, size and origin of elements
         bool smoothClockBool;
         float clockRadius;

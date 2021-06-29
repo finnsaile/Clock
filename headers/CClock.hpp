@@ -14,10 +14,12 @@ class CClock : public sf::Drawable
         void clockTick();
         //used to initialise all elements
         void initClock(sf::RenderWindow&);
-
+        bool getSmoothClockBool();
+        void setSmoothClockBool(bool);
     private:
 
         //variables for calculating correct position, size and origin of elements
+        bool smoothClockBool;
         float clockRadius;
         float clockThickness;
         sf::Vector2u winSize;

@@ -35,6 +35,15 @@ int main()
                         case sf::Keyboard::Escape:  
                             window.close(); 
                             break;
+                        
+                        case sf::Keyboard::R:
+                        
+                            if(clockObject.getSmoothClockBool() == false)
+                                clockObject.setSmoothClockBool(true);
+                            else   
+                                clockObject.setSmoothClockBool(false); 
+                            break;
+
                         default:
                             break;
                     }

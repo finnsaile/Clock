@@ -156,7 +156,7 @@ void CClock::clockTick()
     digitalClock.setString(digitalString);
  
     //set rotation for hour line (360 degree circle / 12 hours = 15; - 90 because rectangles are vertikal)
-    hourLine.setRotation(((timeNow->tm_hour * 30) - 90) + static_cast<float>(smoothClockBool) * 6 * timeNow->tm_min/60);
+    hourLine.setRotation(((timeNow->tm_hour * 30) - 90) + static_cast<float>(smoothClockBool) * 30 * timeNow->tm_min/60);
     //rotation for minute line (360/60 = 6)
     minuteLine.setRotation(((timeNow->tm_min * 6) - 90) + static_cast<float>(smoothClockBool) * 6 * timeNow->tm_sec/60);
     //rotation for second line (360/60 = 6)

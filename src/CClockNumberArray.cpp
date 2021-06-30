@@ -22,6 +22,10 @@ numberArray(new CClockNumber[12])
         numberArray[i].update();
     }
 }
+CClockNumberArray::~CClockNumberArray()
+{
+    delete[] numberArray;
+}
 
 //virtual draw function loops through all objects and draws them
 void CClockNumberArray::draw(sf::RenderTarget& target, sf::RenderStates states) const

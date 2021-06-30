@@ -10,6 +10,7 @@ class CClock : public sf::Drawable
     public:
         //constructor takes window used to get window size
         CClock(sf::RenderWindow &window);
+        ~CClock();
         //changes elements each tick according to current time
         void clockTick();
         //used to initialise all elements

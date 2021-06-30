@@ -8,6 +8,7 @@ class CClockNumberArray : public sf::Drawable
     public: 
         //Constructor takes values needed for elements of number array
         CClockNumberArray(float radius, float thickness, sf::Vector2f position, sf::Vector2f origin);
+        virtual ~CClockNumberArray();
     private:
         //pointer to number array
         CClockNumber* numberArray;

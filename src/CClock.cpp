@@ -28,6 +28,12 @@ winSize(window.getSize())
     clockTick();
 }
 
+CClock::~CClock()
+{
+    delete numberArray;
+    delete timeNow;
+}
+
 //getter function for smooth bool which decides if minute and hour arm move smooth or not
 bool CClock::getSmoothClockBool()
 {

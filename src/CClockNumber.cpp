@@ -1,5 +1,4 @@
 #include "../headers/CClockNumber.hpp"
-#include <iostream>
 //initialise static position variable
 sf::Vector2f CClockNumber::m_position = sf::Vector2f(0,0);
 //initialise static origin variable
@@ -12,17 +11,15 @@ CClockNumber::CClockNumber() :
 m_number(0)
 {
     //load font for numbers
-    m_numberFont.loadFromFile("resources/fonts/digital7.ttf");
+    m_numberFont.loadFromFile("resources/fonts/digital7.ttf");  
 }
 
 //set size of both line members
-void CClockNumber::setSize(sf::Vector2f sizeMain, sf::Vector2f sizeCover)
+void CClockNumber::setSize(sf::Vector2f sizeMain)
 {
     //set correct size and color for both lines
     mainRect.setSize(sizeMain);
-    coverRect.setSize(sizeCover);
-    mainRect.setFillColor(sf::Color::Green);
-    coverRect.setFillColor(sf::Color::Black);
+    mainRect.setFillColor(numberColor);
 }
 
 //update origin and position of both lines 
@@ -30,30 +27,50 @@ void CClockNumber::update()
 {
     //update origin of both lines
     mainRect.setOrigin(m_origin);
-    coverRect.setOrigin(m_origin);
 
     //update position of both lines
     mainRect.setPosition(m_position);
-    coverRect.setPosition(m_position);
+    
+    //move each line to the correct position on the circle using pythagoream theorem and the respective angle
+    //for the first quarter of the clock
+    //m_radius - m_radius/15: origin of line is towards center of clock - therefore each line must be moved towards center by its length
+    //m_rotation: + 90 degrees because sfml angles start at 90 degrees (0 rotation = _, -90 rotation = |)
+    // %90 because for the formula only the angle in the respective quarter is used
+    // * PI / 180 to convert to degree
+    if(m_rotation >= -90 && m_rotation < 0)
+        //move in positive x position and y in negative position  
+        mainRect.move((m_radius - m_radius/15) * sin((((m_rotation + 90) % 90) * PI) / 180), -(m_radius - m_radius/15) * cos((((m_rotation + 90) % 90)  * PI) / 180));
+
+    else if (m_rotation >= 0 && m_rotation < 90)
+        //swap x and y (cos and sin) because the calculations are always respective to the current quarter
+        //move x and y in positive direction
+        mainRect.move((m_radius - m_radius/15) * cos((((m_rotation + 90) % 90)  * PI) / 180), (m_radius - m_radius/15) * sin((((m_rotation + 90) % 90) * PI) / 180));
+
+    else if (m_rotation >= 90 && m_rotation < 180)
+        mainRect.move(-(m_radius - m_radius/15) * sin((((m_rotation + 90) % 90) * PI) / 180), (m_radius - m_radius/15) * cos((((m_rotation + 90)% 90)  * PI) / 180));
+        //same as first one but move x in negative and y in positive direction (because it's mirrored)
+    else    
+        //same as second one but move both x and y in negative direction (because it's mirrored)
+        mainRect.move(-(m_radius - m_radius/15) * cos((((m_rotation + 90)% 90)  * PI) / 180),-(m_radius - m_radius/15) * sin((((m_rotation + 90) % 90) * PI) / 180));
 
     //update position and origin of number
     m_numberText.setOrigin(m_numberText.getLocalBounds().width / 1.75, m_numberText.getLocalBounds().height);
     m_numberText.setPosition(m_position);
     
-    //move number text according to number (formating)
+    //move number text according to number and radius of clock (formating)
     switch(m_number)
     {
         case 3:
-            m_numberText.move(m_radius - 45, 0);
+            m_numberText.move(m_radius - m_radius / 6.4, m_radius / 220);
             break;
         case 6:
-            m_numberText.move(-1.5, m_radius - 55);
+            m_numberText.move(- m_radius / 192, m_radius - m_radius / 5.2);
             break;
         case 9:
-            m_numberText.move(- m_radius + 45, 0);
+            m_numberText.move(- m_radius + m_radius / 6.4, m_radius / 230);
             break;
         case 12:
-            m_numberText.move(0, - m_radius + 55);
+            m_numberText.move(m_radius / 230, - m_radius + m_radius / 5.2);
             break;
         default:
             break;         
@@ -61,13 +78,12 @@ void CClockNumber::update()
 }
 
 //set rotation of both lines
-void CClockNumber::setRotation(float in)
+void CClockNumber::setRotation(int in)
 {
     //set rotation member variable
     m_rotation = in - 90;
     //set rotation of both lines
     mainRect.setRotation(m_rotation);
-    coverRect.setRotation(m_rotation);
 }
 
 //getter function returns rotation
@@ -125,14 +141,19 @@ void CClockNumber::setNumber(unsigned int in, float fontSize)
     m_numberText.setFont(m_numberFont);
     m_numberText.setCharacterSize(fontSize);
     m_numberText.setString(std::to_string(m_number));
-    m_numberText.setFillColor(sf::Color::Green);
+    m_numberText.setFillColor(numberColor);
+}
+
+//set color membervariable for color of numbers and lines
+void CClockNumber::setColor(sf::Color color)
+{
+    this->numberColor = color;
 }
 
 //virtual draw function draws both lines and number
 void CClockNumber::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
     target.draw(mainRect);
-    target.draw(coverRect);
     //only draw number if its 3/6/9/12
     if(m_number % 3 == 0)
         target.draw(m_numberText);

@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <string>
+#include <math.h>
+#define PI 3.14159265
 
 class CClockNumber : public sf::Drawable
 {
@@ -9,8 +11,10 @@ class CClockNumber : public sf::Drawable
         CClockNumber();
         //update origin and position of both lines 
         void update();
+        //set color of lines and numbers
+        void setColor(sf::Color color);
         //set rotation of both lines
-        void setRotation(float);
+        void setRotation(int);
         //getter function returns rotation
         float getRotation();
         //setter function sets static origin variable
@@ -26,7 +30,7 @@ class CClockNumber : public sf::Drawable
         //getter function returns static radius variable
         static float getRadius();
         //set size of both line members
-        void setSize(sf::Vector2f, sf::Vector2f);
+        void setSize(sf::Vector2f);
         //setter for m_number
         void setNumber(unsigned int, float);
         //getter for m_number
@@ -36,6 +40,7 @@ class CClockNumber : public sf::Drawable
         unsigned int m_number;
         sf::Text m_numberText;
         sf::Font m_numberFont;
+        sf::Color numberColor;
         //static variable to save position of all elements
         static sf::Vector2f m_position;
         //static variable to save origin of all elements
@@ -43,10 +48,9 @@ class CClockNumber : public sf::Drawable
         //static vartiable for radius
         static float m_radius;
         //variable to save rotation, differs for every elements
-        float m_rotation;
+        int m_rotation;
         //two rectangles one to display, one to cover unwanted part
         sf::RectangleShape mainRect;
-        sf::RectangleShape coverRect;
         //virtual draw function
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };

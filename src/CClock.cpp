@@ -1,20 +1,54 @@
 #include "../headers/CClock.hpp"
 
-//constructor takes reference to window
-CClock::CClock(sf::RenderWindow &window) :
-smoothClockBool(false),
-winSize(window.getSize())
+/******************************************************************************************
+ * ***************************       CONSTRUCTORS       ***********************************
+ * ***************************************************************************************/
+
+//constructor without position
+CClock::CClock(sf::Vector2u size, sf::Color color, bool digitalClock, bool smoothClock) :
+digitalClockBool(digitalClock),
+smoothClockBool(smoothClock),
+clockSize(size),
+position(sf::Vector2f(size.x/2, size.y/2)),
+clockColor(color)
+{
+    //initialize clock
+    initClock();
+}
+
+//constructor with position
+CClock::CClock(sf::Vector2u size, sf::Vector2f centerPosition, sf::Color color, bool digitalClock, bool smoothClock) :
+digitalClockBool(digitalClock),
+smoothClockBool(smoothClock),
+clockSize(size),
+position(centerPosition),
+clockColor(color)
+{
+    //initialize clock
+    initClock();
+}
+
+/******************************************************************************************
+ * ****************************************************************************************
+ * ***************************************************************************************/
+
+CClock::~CClock()
+{
+    delete numberArray;
+}
+
+void CClock::initClock()
 {
     //calculatee clock radius and thickness
-    clockRadius = winSize.y * 0.4;
-    clockThickness = winSize.y / 100;
+    clockRadius = clockSize.y * 0.4;
+    clockThickness = clockSize.y / 100;
     
     //calculate position of clock center
-    position.x = winSize.x/2;
-    position.y = winSize.y/2 + winSize.x/20;
+    if(digitalClockBool)
+        position.y += (clockSize.x/20);
     
     //number Array gets constructed
-    numberArray = new CClockNumberArray(winSize.y * 0.4, winSize.y / 100, sf::Vector2f(winSize.x/2, winSize.y/2 + winSize.x/20), sf::Vector2f(0, (winSize.y/100)/ 2));
+    numberArray = new CClockNumberArray(clockRadius, clockThickness, sf::Vector2f(position.x, position.y), sf::Vector2f(0, (clockThickness)/ 2), clockColor);
     
     //call all initialisation methods
     initDigitalClock();
@@ -28,24 +62,6 @@ winSize(window.getSize())
     clockTick();
 }
 
-CClock::~CClock()
-{
-    delete numberArray;
-    delete timeNow;
-}
-
-//getter function for smooth bool which decides if minute and hour arm move smooth or not
-bool CClock::getSmoothClockBool()
-{
-    return smoothClockBool;
-}
-
-//setter function for smooth bool
-void CClock::setSmoothClockBool(bool in)
-{
-    smoothClockBool = in;
-}
-
 //initialises digital clock
 void CClock::initDigitalClock()
 {
@@ -54,15 +70,15 @@ void CClock::initDigitalClock()
     //set font of clock string
     digitalClock.setFont(digitalClockFont);
     //set char size
-    digitalClock.setCharacterSize(winSize.y/10);
+    digitalClock.setCharacterSize(clockSize.y/10);
     //set color
-    digitalClock.setFillColor(sf::Color::Green);
+    digitalClock.setFillColor(clockColor);
     //set dummy string to calculate first origin and position
     digitalClock.setString("00:00:00");
     //calculate and set origin
     digitalClock.setOrigin(digitalClock.getLocalBounds().width/2, digitalClock.getLocalBounds().height/2);
     //calculate and set position
-    digitalClock.setPosition(position.x, winSize.y/20);
+    digitalClock.setPosition(position.x, clockSize.y/20);
 }
 
 //initialises clock circle
@@ -77,11 +93,11 @@ void CClock::initClockCircle()
     //set precalculated position
     clockCircle.setPosition(position);
     //set fill color to black
-    clockCircle.setFillColor(sf::Color::Black);
+    clockCircle.setFillColor(sf::Color::Transparent);
     //set precalculated outlinethickness
     clockCircle.setOutlineThickness(clockThickness);
     //set outline color
-    clockCircle.setOutlineColor(sf::Color::Green);
+    clockCircle.setOutlineColor(clockColor);
 }
 
 //initialises clockcenter
@@ -96,7 +112,7 @@ void CClock::initClockCenter()
     //set precalculated position
     clockCenter.setPosition(position);
     //set fill color to green
-    clockCenter.setFillColor(sf::Color::Green);
+    clockCenter.setFillColor(clockColor);
 }
 
 //initialises hour line
@@ -109,7 +125,7 @@ void CClock::initHourLine()
     //set precalculated position
     hourLine.setPosition(position);
     //set fill color to green
-    hourLine.setFillColor(sf::Color::Green);
+    hourLine.setFillColor(clockColor);
     //set initial rotation
     hourLine.setRotation(-90);
 }
@@ -123,7 +139,7 @@ void CClock::initMinuteLine()
     //set precalculated position
     minuteLine.setPosition(position);
     //set fill color to green
-    minuteLine.setFillColor(sf::Color::Green);
+    minuteLine.setFillColor(clockColor);
 }
 //initialises second line
 void CClock::initSecondLine()
@@ -135,7 +151,7 @@ void CClock::initSecondLine()
     //set precalculated position
     secondLine.setPosition(position);
     //set fill color to green
-    secondLine.setFillColor(sf::Color::Green);
+    secondLine.setFillColor(clockColor);
     //set initial rotation
     secondLine.setRotation(90);
 }
@@ -169,10 +185,39 @@ void CClock::clockTick()
     secondLine.setRotation((timeNow->tm_sec * 6) - 90);
 }
 
+//getter function for smooth bool which decides if minute and hour arm move smooth or not
+bool CClock::getSmoothClockBool()
+{
+    return smoothClockBool;
+}
+
+//setter function for smooth bool
+void CClock::setSmoothClockBool(bool in)
+{
+    smoothClockBool = in;
+}
+
+//getter function for digital bool which decides if minute and hour arm move smooth or not
+bool CClock::getDigitalClockBool()
+{
+    return digitalClockBool;
+}
+
+//setter function for digital bool
+void CClock::setDigitalClockBool(bool in)
+{
+    digitalClockBool = in;
+    if(!digitalClockBool) 
+        position.y -= (clockSize.x/20);
+    initClock();
+}
+
 //draw all objects in correct order
 void CClock::draw(sf::RenderTarget& target, sf::RenderStates states) const
 { 
-    target.draw(digitalClock);
+    //only draw digital clock when digialClockBool is true
+    if(digitalClockBool)
+        target.draw(digitalClock);
     target.draw(clockCircle);
     target.draw(*numberArray);
     target.draw(clockCenter);

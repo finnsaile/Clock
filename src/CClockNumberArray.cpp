@@ -15,7 +15,7 @@ numberArray(new CClockNumber[12])
     {
         numberArray[i].setNumber(i, thickness * 10);
         //set size of element (first size for visible line, second size for invisible line)
-        numberArray[i].setSize(sf::Vector2f(radius, thickness), sf::Vector2f(radius - radius/15, thickness));
+        numberArray[i].setSize(sf::Vector2f(radius/15, thickness));
         //set rotation according to n
         numberArray[i].setRotation(i * 30);
         //update origin and position of both lines in object

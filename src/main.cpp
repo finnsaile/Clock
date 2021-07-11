@@ -43,7 +43,7 @@ int main()
                         //change smooth mode if R is pressed
                         case sf::Keyboard::R:
                         
-                            if(clockObject.getSmoothClockBool() == false)
+                            if(clockObject.getSmoothClockBool() == false) 
                                 clockObject.setSmoothClockBool(true);
                             else   
                                 clockObject.setSmoothClockBool(false); 

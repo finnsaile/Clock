@@ -1,6 +1,6 @@
 #include "../headers/CClockNumberArray.hpp"
 
-CClockNumberArray::CClockNumberArray(float radius, float thickness, sf::Vector2f position, sf::Vector2f origin) :
+CClockNumberArray::CClockNumberArray(float radius, float thickness, sf::Vector2f position, sf::Vector2f origin, sf::Color color) :
 //allocate memory for 12 objects
 numberArray(new CClockNumber[12])
 {
@@ -13,6 +13,7 @@ numberArray(new CClockNumber[12])
     //loop through all elements of array
     for (int i = 0; i < 12; i++)
     {
+        numberArray[i].setColor(color);
         numberArray[i].setNumber(i, thickness * 10);
         //set size of element (first size for visible line, second size for invisible line)
         numberArray[i].setSize(sf::Vector2f(radius/15, thickness));

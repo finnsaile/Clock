@@ -1,5 +1,4 @@
 #include "../headers/CClockNumber.hpp"
-#include <iostream>
 //initialise static position variable
 sf::Vector2f CClockNumber::m_position = sf::Vector2f(0,0);
 //initialise static origin variable
@@ -12,7 +11,7 @@ CClockNumber::CClockNumber() :
 m_number(0)
 {
     //load font for numbers
-    m_numberFont.loadFromFile("resources/fonts/digital7.ttf");
+    m_numberFont.loadFromFile("resources/fonts/digital7.ttf");  
 }
 
 //set size of both line members
@@ -20,7 +19,7 @@ void CClockNumber::setSize(sf::Vector2f sizeMain)
 {
     //set correct size and color for both lines
     mainRect.setSize(sizeMain);
-    mainRect.setFillColor(sf::Color::Green);
+    mainRect.setFillColor(numberColor);
 }
 
 //update origin and position of both lines 
@@ -58,20 +57,20 @@ void CClockNumber::update()
     m_numberText.setOrigin(m_numberText.getLocalBounds().width / 1.75, m_numberText.getLocalBounds().height);
     m_numberText.setPosition(m_position);
     
-    //move number text according to number (formating)
+    //move number text according to number and radius of clock (formating)
     switch(m_number)
     {
         case 3:
-            m_numberText.move(m_radius - 45, 0);
+            m_numberText.move(m_radius - m_radius / 6.4, m_radius / 220);
             break;
         case 6:
-            m_numberText.move(-1.5, m_radius - 55);
+            m_numberText.move(- m_radius / 192, m_radius - m_radius / 5.2);
             break;
         case 9:
-            m_numberText.move(- m_radius + 45, 0);
+            m_numberText.move(- m_radius + m_radius / 6.4, m_radius / 230);
             break;
         case 12:
-            m_numberText.move(0, - m_radius + 55);
+            m_numberText.move(m_radius / 230, - m_radius + m_radius / 5.2);
             break;
         default:
             break;         
@@ -142,7 +141,13 @@ void CClockNumber::setNumber(unsigned int in, float fontSize)
     m_numberText.setFont(m_numberFont);
     m_numberText.setCharacterSize(fontSize);
     m_numberText.setString(std::to_string(m_number));
-    m_numberText.setFillColor(sf::Color::Green);
+    m_numberText.setFillColor(numberColor);
+}
+
+//set color membervariable for color of numbers and lines
+void CClockNumber::setColor(sf::Color color)
+{
+    this->numberColor = color;
 }
 
 //virtual draw function draws both lines and number

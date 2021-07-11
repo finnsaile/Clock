@@ -11,6 +11,8 @@ class CClockNumber : public sf::Drawable
         CClockNumber();
         //update origin and position of both lines 
         void update();
+        //set color of lines and numbers
+        void setColor(sf::Color color);
         //set rotation of both lines
         void setRotation(int);
         //getter function returns rotation
@@ -38,6 +40,7 @@ class CClockNumber : public sf::Drawable
         unsigned int m_number;
         sf::Text m_numberText;
         sf::Font m_numberFont;
+        sf::Color numberColor;
         //static variable to save position of all elements
         static sf::Vector2f m_position;
         //static variable to save origin of all elements

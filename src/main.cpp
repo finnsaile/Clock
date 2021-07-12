@@ -2,6 +2,7 @@
 #include <iostream>
 #include "../headers/CClock.hpp"
 
+
 int main()
 {
     //antialiasing 
@@ -20,12 +21,8 @@ int main()
     window.setKeyRepeatEnabled(false);
 
     //Create clock
-    CClock clockObject(window.getSize(), sf::Vector2f(window.getSize().x/2, window.getSize().y/2), sf::Color::Red);
-    CClock clockObject1(window.getSize(), sf::Vector2f(0, 0));
-    CClock clockObject2(window.getSize(), sf::Vector2f(window.getSize().x, window.getSize().y));
-    CClock clockObject3(window.getSize(), sf::Vector2f(0, window.getSize().y));
-    CClock clockObject4(window.getSize(), sf::Vector2f(window.getSize().x, 0));
-    //Create event
+    CClock clockObject(window.getSize(), sf::Vector2f(window.getSize().x/2, window.getSize().y/2), sf::Color::Green, true, false);
+
     sf::Event event;
     //window loop
     while (window.isOpen())
@@ -44,7 +41,7 @@ int main()
                     switch(event.key.code)
                     {
                         //close window if ESC is pressed
-                        case sf::Keyboard::Escape:  
+                        case sf::Keyboard::Escape:
                             window.close(); 
                             break;
                         //change smooth mode if R is pressed
@@ -63,6 +60,23 @@ int main()
                             else   
                                 clockObject.setDigitalClockBool(false); 
                             break;
+                        
+                        case sf::Keyboard::C:
+                            
+                            if(clockObject.getColor() == sf::Color::Green) 
+                                clockObject.setColor(sf::Color::Blue);
+                            else if(clockObject.getColor() == sf::Color::Blue)   
+                                clockObject.setColor(sf::Color::Red); 
+                            else if(clockObject.getColor() == sf::Color::Red)   
+                                clockObject.setColor(sf::Color::Magenta); 
+                            else if(clockObject.getColor() == sf::Color::Magenta)   
+                                clockObject.setColor(sf::Color::Cyan); 
+                            else if(clockObject.getColor() == sf::Color::Cyan)   
+                                clockObject.setColor(sf::Color::Yellow); 
+                            else if(clockObject.getColor() == sf::Color::Yellow)   
+                                clockObject.setColor(sf::Color::Green); 
+
+                            break;
 
                         default:
                             break;
@@ -73,19 +87,13 @@ int main()
         }
         //call window tick from window object
         clockObject.clockTick();
-        clockObject1.clockTick();
-        clockObject2.clockTick();
-        clockObject3.clockTick();
-        clockObject4.clockTick();
         //clear window
         window.clear(sf::Color::Transparent);
         //draw clock
         window.draw(clockObject);
-        window.draw(clockObject1);
-        window.draw(clockObject2);
-        window.draw(clockObject3);
-        window.draw(clockObject4);
         //display everything
         window.display();
-    }   
+    } 
+    return 0;  
 }
+

@@ -4,26 +4,20 @@
  * ***************************       CONSTRUCTORS       ***********************************
  * ***************************************************************************************/
 
-//constructor without position
-CClock::CClock(sf::Vector2u size, sf::Color color, bool digitalClock, bool smoothClock) :
-digitalClockBool(digitalClock),
-smoothClockBool(smoothClock),
-clockSize(size),
-position(sf::Vector2f(size.x/2, size.y/2)),
-clockColor(color)
-{
-    //initialize clock
-    initClock();
-}
 
 //constructor with position
-CClock::CClock(sf::Vector2u size, sf::Vector2f centerPosition, sf::Color color, bool digitalClock, bool smoothClock) :
+CClock::CClock(sf::Vector2u size, sf::Vector2f position, sf::Color color, bool digitalClock, bool smoothClock) :
+numberArray(nullptr),
+clockOffsetBool(digitalClock),
 digitalClockBool(digitalClock),
 smoothClockBool(smoothClock),
 clockSize(size),
-position(centerPosition),
+clockPosition(position),
 clockColor(color)
 {
+    //if digital clock is activated move clock down
+    if(digitalClockBool)
+        clockPosition.y += (clockSize.x/20);
     //initialize clock
     initClock();
 }
@@ -43,12 +37,19 @@ void CClock::initClock()
     clockRadius = clockSize.y * 0.4;
     clockThickness = clockSize.y / 100;
     
-    //calculate position of clock center
-    if(digitalClockBool)
-        position.y += (clockSize.x/20);
+
+    //if digital clock is activated and clock hasn't benn moved already move clock and set offsetBool to true
+    if(!clockOffsetBool && digitalClockBool)
+    {
+        clockOffsetBool = true;        
+        clockPosition.y += (clockSize.x/20);
+    }
+
     
     //number Array gets constructed
-    numberArray = new CClockNumberArray(clockRadius, clockThickness, sf::Vector2f(position.x, position.y), sf::Vector2f(0, (clockThickness)/ 2), clockColor);
+    if (numberArray != nullptr)
+        delete numberArray;
+    numberArray = new CClockNumberArray(clockRadius, clockThickness, sf::Vector2f(clockPosition.x, clockPosition.y), sf::Vector2f(0, (clockThickness)/ 2), clockColor);
     
     //call all initialisation methods
     initDigitalClock();
@@ -78,7 +79,7 @@ void CClock::initDigitalClock()
     //calculate and set origin
     digitalClock.setOrigin(digitalClock.getLocalBounds().width/2, digitalClock.getLocalBounds().height/2);
     //calculate and set position
-    digitalClock.setPosition(position.x, clockSize.y/20);
+    digitalClock.setPosition(clockPosition.x, clockSize.y/20);
 }
 
 //initialises clock circle
@@ -91,7 +92,7 @@ void CClock::initClockCircle()
     //set precalculated origin
     clockCircle.setOrigin(clockRadius, clockRadius);
     //set precalculated position
-    clockCircle.setPosition(position);
+    clockCircle.setPosition(clockPosition);
     //set fill color to black
     clockCircle.setFillColor(sf::Color::Transparent);
     //set precalculated outlinethickness
@@ -110,7 +111,7 @@ void CClock::initClockCenter()
     //set precalculated origin
     clockCenter.setOrigin(clockThickness, clockThickness);
     //set precalculated position
-    clockCenter.setPosition(position);
+    clockCenter.setPosition(clockPosition);
     //set fill color to green
     clockCenter.setFillColor(clockColor);
 }
@@ -123,7 +124,7 @@ void CClock::initHourLine()
     //set orign correctly
     hourLine.setOrigin(0, clockThickness/2);
     //set precalculated position
-    hourLine.setPosition(position);
+    hourLine.setPosition(clockPosition);
     //set fill color to green
     hourLine.setFillColor(clockColor);
     //set initial rotation
@@ -137,7 +138,7 @@ void CClock::initMinuteLine()
     //set orign correctly
     minuteLine.setOrigin(0, clockThickness/ 2);
     //set precalculated position
-    minuteLine.setPosition(position);
+    minuteLine.setPosition(clockPosition);
     //set fill color to green
     minuteLine.setFillColor(clockColor);
 }
@@ -149,7 +150,7 @@ void CClock::initSecondLine()
     //set orign correctly
     secondLine.setOrigin(0, clockThickness/ 2);
     //set precalculated position
-    secondLine.setPosition(position);
+    secondLine.setPosition(clockPosition);
     //set fill color to green
     secondLine.setFillColor(clockColor);
     //set initial rotation
@@ -207,8 +208,52 @@ bool CClock::getDigitalClockBool()
 void CClock::setDigitalClockBool(bool in)
 {
     digitalClockBool = in;
+    //if digital clock is being turned of, move clock up and set offset bool to false
     if(!digitalClockBool) 
-        position.y -= (clockSize.x/20);
+    {
+        clockOffsetBool = false;
+        clockPosition.y -= (clockSize.x/20);
+    }
+
+    initClock();
+}
+
+//getter function for clock size
+sf::Vector2u CClock::getSize()
+{
+    return clockSize;
+}
+
+//setter function for clock size
+void CClock::setSize(sf::Vector2u size)
+{
+    clockSize = size;
+    initClock();
+}
+
+//getter function for clock color
+sf::Color CClock::getColor()
+{
+    return clockColor;
+}
+
+//setter function for clock color
+void CClock::setColor(sf::Color color)
+{
+    clockColor = color;
+    initClock();
+}
+
+//getter function for clock position
+sf::Vector2f CClock::getPosition()
+{
+    return clockPosition;
+}
+
+//setter function for clock position
+void CClock::setPosition(sf::Vector2f position)
+{
+    clockPosition = position;
     initClock();
 }
 

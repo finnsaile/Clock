@@ -5,12 +5,15 @@
 int main()
 {
     //antialiasing 
+    sf::Image icon;
+    icon.loadFromFile("resources/icons/clock_icon.png");
     sf::ContextSettings settings;
     settings.antialiasingLevel = 8;
     //get screen height
     unsigned int heigth = sf::VideoMode::getDesktopMode().height;
     //create non scalable window
     sf::RenderWindow window(sf::VideoMode(heigth / 2, heigth / 2), "Clock", sf::Style::Titlebar | sf::Style::Close, settings);
+    window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
     //enable V-Sync
     window.setFramerateLimit(10);
     //disable repeat key press on hold

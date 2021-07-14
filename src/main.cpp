@@ -69,8 +69,7 @@ int main()
                                 clockObject.setDigitalClockBool(false); 
                             break;
                         
-                        case sf::Keyboard::C:
-                            
+                        case sf::Keyboard::C:                            
                             if(clockObject.getColor() == sf::Color::Green) 
                                 clockObject.setColor(sf::Color::Blue);
                             else if(clockObject.getColor() == sf::Color::Blue)   
@@ -78,6 +77,7 @@ int main()
                             else if(clockObject.getColor() == sf::Color::Red)   
                                 clockObject.setColor(sf::Color::Magenta); 
                             else if(clockObject.getColor() == sf::Color::Magenta)   
+                            
                                 clockObject.setColor(sf::Color::Cyan); 
                             else if(clockObject.getColor() == sf::Color::Cyan)   
                                 clockObject.setColor(sf::Color::Yellow); 

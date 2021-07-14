@@ -4,6 +4,8 @@
 #include <string>
 #include <iostream>
 #include "CClockNumberArray.hpp"
+#include "CDigitalClock.hpp"
+#include "CAnalogClock.hpp"
 
 class CClock : public sf::Drawable
 {
@@ -13,6 +15,7 @@ class CClock : public sf::Drawable
         ~CClock();
         //changes elements each tick according to current time
         void clockTick();
+        void update();
         //getter and setter functions
         bool getSmoothClockBool();
         bool getDigitalClockBool();
@@ -29,6 +32,9 @@ class CClock : public sf::Drawable
 
         //Array Object for 12 numbers
         CClockNumberArray *numberArray;
+        //both clock objects
+        CDigitalClock* digitalClock;
+        CAnalogClock* analogClock;
         
         //variables for calculating correct position, size and origin of elements
         bool clockOffsetBool;
@@ -38,36 +44,11 @@ class CClock : public sf::Drawable
         float clockThickness;
         sf::Vector2u clockSize;
         sf::Vector2f clockPosition;
-
-        //clock Color
         sf::Color clockColor;
 
-        //variable for calculating time
-        std::time_t passedTime;
-        std::tm* timeNow;
-
-        //font and string for digital clock
-        sf::Font digitalClockFont;
-        sf::Text digitalClock;
-
-        //center and circle for analog clock
-        sf::CircleShape clockCircle;
-        sf::CircleShape clockCenter;
-
-        //lines for analog clock
-        sf::RectangleShape hourLine;
-        sf::RectangleShape minuteLine;
-        sf::RectangleShape secondLine;
+        //returns either width or heigh of of clock size depending on which is smaller
+        unsigned int calcSize();
 
         //virtual draw function from sf::Drawable
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-        
-        //functions for initialisation of elemets
-        void initClock();
-        void initDigitalClock();
-        void initClockCircle();
-        void initClockCenter();
-        void initHourLine();
-        void initMinuteLine();
-        void initSecondLine();
 };

@@ -1,195 +1,58 @@
 #include "../headers/CClock.hpp"
 
-/******************************************************************************************
- * ***************************       CONSTRUCTORS       ***********************************
- * ***************************************************************************************/
-
-
-//constructor with position
-CClock::CClock(sf::Vector2u size, sf::Vector2f position, sf::Color color, bool digitalClock, bool smoothClock) :
+//constructor with all needed parameters
+CClock::CClock(sf::Vector2u size, sf::Vector2f position, sf::Color color, bool digitalClockB, bool smoothClockB) :
 numberArray(nullptr),
-clockOffsetBool(digitalClock),
-digitalClockBool(digitalClock),
-smoothClockBool(smoothClock),
+clockOffsetBool(false),
+digitalClockBool(digitalClockB),
+smoothClockBool(smoothClockB),
 clockSize(size),
 clockPosition(position),
 clockColor(color)
 {
-    //if digital clock is activated move clock down
-    if(digitalClockBool)
-        clockPosition.y += ((clockSize.y < clockSize.x ? clockSize.y : clockSize.x)/20);
-    //initialize clock
-    initClock();
-}
-
-/******************************************************************************************
- * ****************************************************************************************
- * ***************************************************************************************/
-
-CClock::~CClock()
-{
-    delete numberArray;
-}
-
-void CClock::initClock()
-{
-    //calculatee clock radius and thickness
-    if(clockSize.y < clockSize.x)
-    {
-        clockRadius = clockSize.y * 0.4;
-        clockThickness = clockSize.y / 100;
-    }
-    else
-    {
-        clockRadius = clockSize.x * 0.4;
-        clockThickness = clockSize.x / 100;
-    }
-
-    //if digital clock is activated and clock hasn't been moved already move clock and set offsetBool to true
+    //if digital clock is activated and clock hasn't been moved already move clock position and set offsetBool to true
     if(!clockOffsetBool && digitalClockBool)
     {
         clockOffsetBool = true;        
-        clockPosition.y += ((clockSize.y < clockSize.x ? clockSize.y : clockSize.x)/20);
+        clockPosition.y += (calcSize()/20);
     }
 
-    //number Array gets constructed
-    if (numberArray != nullptr)
-        delete numberArray;
-    numberArray = new CClockNumberArray(clockRadius, clockThickness, sf::Vector2f(clockPosition.x, clockPosition.y), sf::Vector2f(0, (clockThickness)/ 2), clockColor);
-    
-    //call all initialisation methods
-    initDigitalClock();
-    initClockCircle();
-    initClockCenter();
-    initHourLine();
-    initMinuteLine();
-    initSecondLine();
-    
-    //call clock tick once
-    clockTick();
+    //calculatee clock radius and thickness
+    clockRadius = calcSize() * 0.4;
+    clockThickness = calcSize() / 100;
+
+    //create all 3 objects with the correct values
+    numberArray = new CClockNumberArray(clockRadius, clockThickness, clockPosition, clockColor);
+    digitalClock = new CDigitalClock(clockSize, clockPosition, clockRadius, clockColor);
+    analogClock = new CAnalogClock(clockPosition, clockRadius, clockColor, clockThickness, smoothClockBool);
 }
 
-//initialises digital clock
-void CClock::initDigitalClock()
+//delete all 3 objects
+CClock::~CClock()
 {
-    //load font
-    digitalClockFont.loadFromFile("resources/fonts/digital7_mono.ttf");
-    //set font of clock string
-    digitalClock.setFont(digitalClockFont);
-    //set char size
-    digitalClock.setCharacterSize((clockSize.y < clockSize.x ? clockSize.y : clockSize.x)/10);
-    //set color
-    digitalClock.setFillColor(clockColor);
-    //set dummy string to calculate first origin and position
-    digitalClock.setString("00:00:00");
-    //calculate and set origin
-    digitalClock.setOrigin(digitalClock.getLocalBounds().width/2, digitalClock.getLocalBounds().height/2);
-    //calculate and set position
-    digitalClock.setPosition(clockPosition.x, clockPosition.y - clockRadius - clockRadius * 0.25);
+    delete numberArray;
+    delete digitalClock;
+    delete analogClock;
 }
 
-//initialises clock circle
-void CClock::initClockCircle()
+//update all 3 objects
+void CClock::update()
 {
-    //high circle point count for smooth appearance
-    clockCircle.setPointCount(100);
-    //set precalculated radius
-    clockCircle.setRadius(clockRadius);
-    //set precalculated origin
-    clockCircle.setOrigin(clockRadius, clockRadius);
-    //set precalculated position
-    clockCircle.setPosition(clockPosition);
-    //set fill color to black
-    clockCircle.setFillColor(sf::Color::Transparent);
-    //set precalculated outlinethickness
-    clockCircle.setOutlineThickness(clockThickness);
-    //set outline color
-    clockCircle.setOutlineColor(clockColor);
+    //calculate new radius and thickness
+    clockRadius = calcSize() * 0.4;
+    clockThickness = calcSize() / 100;
+
+    //update all objects
+    digitalClock->update();
+    analogClock->update();
+    numberArray->update();
 }
 
-//initialises clockcenter
-void CClock::initClockCenter()
-{
-    //high circle point count for smooth appearance
-    clockCenter.setPointCount(100);
-    //set precalculated radius
-    clockCenter.setRadius(clockThickness);
-    //set precalculated origin
-    clockCenter.setOrigin(clockThickness, clockThickness);
-    //set precalculated position
-    clockCenter.setPosition(clockPosition);
-    //set fill color to green
-    clockCenter.setFillColor(clockColor);
-}
-
-//initialises hour line
-void CClock::initHourLine()
-{
-    //set length according to radius
-    hourLine.setSize(sf::Vector2f(clockRadius - clockRadius/2, clockThickness));
-    //set orign correctly
-    hourLine.setOrigin(0, clockThickness/2);
-    //set precalculated position
-    hourLine.setPosition(clockPosition);
-    //set fill color to green
-    hourLine.setFillColor(clockColor);
-    //set initial rotation
-    hourLine.setRotation(-90);
-}
-//initialises minute line
-void CClock::initMinuteLine()
-{
-    //set length according to radius
-    minuteLine.setSize(sf::Vector2f(clockRadius - clockRadius/5, clockThickness));
-    //set orign correctly
-    minuteLine.setOrigin(0, clockThickness/ 2);
-    //set precalculated position
-    minuteLine.setPosition(clockPosition);
-    //set fill color to green
-    minuteLine.setFillColor(clockColor);
-}
-//initialises second line
-void CClock::initSecondLine()
-{
-    //set length according to radius
-    secondLine.setSize(sf::Vector2f(clockRadius - clockRadius/10, clockThickness));
-    //set orign correctly
-    secondLine.setOrigin(0, clockThickness/ 2);
-    //set precalculated position
-    secondLine.setPosition(clockPosition);
-    //set fill color to green
-    secondLine.setFillColor(clockColor);
-    //set initial rotation
-    secondLine.setRotation(90);
-}
-
-//adjust each element according to current time
+//call tick function for both clocks
 void CClock::clockTick()
 {
-    //get time passed 1970 or smth
-    passedTime = std::time(0);
-    //convert to tm localtime
-    timeNow = std::localtime(&passedTime);
-    //compose digital string of all values
-    std::string digitalString = std::to_string(timeNow->tm_hour) + ":" + std::to_string(timeNow->tm_min) + ":" + std::to_string(timeNow->tm_sec);
-    //add 0 if hour has only one digit 
-    if (timeNow->tm_hour < 10)
-        digitalString = "0" + digitalString;
-    //add 0 if minute value has only one digit
-    if (timeNow->tm_min < 10)
-        digitalString.insert(3, "0");
-    //add 0 if second value has only one digit
-    if (timeNow->tm_sec < 10)
-        digitalString.insert(6, "0");
-    //set string for digital clock
-    digitalClock.setString(digitalString);
- 
-    //set rotation for hour line (360 degree circle / 12 hours = 15; - 90 because rectangles are vertikal)
-    hourLine.setRotation(((timeNow->tm_hour * 30) - 90) + static_cast<float>(smoothClockBool) * 30 * timeNow->tm_min/60);
-    //rotation for minute line (360/60 = 6)
-    minuteLine.setRotation(((timeNow->tm_min * 6) - 90) + static_cast<float>(smoothClockBool) * 6 * timeNow->tm_sec/60);
-    //rotation for second line (360/60 = 6)
-    secondLine.setRotation((timeNow->tm_sec * 6) - 90);
+    digitalClock->tick();
+    analogClock->tick();
 }
 
 //getter function for smooth bool which decides if minute and hour arm move smooth or not
@@ -214,14 +77,22 @@ bool CClock::getDigitalClockBool()
 void CClock::setDigitalClockBool(bool in)
 {
     digitalClockBool = in;
+
     //if digital clock is being turned off, move clock up and set offset bool to false
     if(!digitalClockBool) 
     {
         clockOffsetBool = false;
-        clockPosition.y -= ((clockSize.y < clockSize.x ? clockSize.y : clockSize.x)/20);
+        clockPosition.y -= (calcSize()/20);
+    }
+    //if digital bool is being turned on, and there is no offset move clock down
+    else if(!clockOffsetBool && digitalClockBool)
+    {
+        clockOffsetBool = true;        
+        clockPosition.y += (calcSize()/20);
     }
 
-    initClock();
+    //update all elements
+    update();
 }
 
 //getter function for clock size
@@ -234,7 +105,8 @@ sf::Vector2u CClock::getSize()
 void CClock::setSize(sf::Vector2u size)
 {
     clockSize = size;
-    initClock();
+    //update all elements
+    update();
 }
 
 //getter function for clock color
@@ -247,7 +119,8 @@ sf::Color CClock::getColor()
 void CClock::setColor(sf::Color color)
 {
     clockColor = color;
-    initClock();
+    //update all elements
+    update();
 }
 
 //getter function for clock position
@@ -259,9 +132,22 @@ sf::Vector2f CClock::getPosition()
 //setter function for clock position
 void CClock::setPosition(sf::Vector2f position)
 {
+    //change clock position
     clockPosition = position;
-    clockOffsetBool = false;
-    initClock();
+    //if digital clock is turned on, offset needs to be recalculated
+    if(digitalClockBool)
+    {
+        clockOffsetBool = true;        
+        clockPosition.y += (calcSize()/20);
+    }
+    //update all elements
+    update();
+}
+
+//calc size returns either width or heigh of clock depending on which on is smaller
+unsigned int CClock::calcSize()
+{
+    return (clockSize.y < clockSize.x ? clockSize.y : clockSize.x);
 }
 
 //draw all objects in correct order
@@ -269,11 +155,7 @@ void CClock::draw(sf::RenderTarget& target, sf::RenderStates states) const
 { 
     //only draw digital clock when digialClockBool is true
     if(digitalClockBool)
-        target.draw(digitalClock);
-    target.draw(clockCircle);
+        target.draw(*digitalClock);
     target.draw(*numberArray);
-    target.draw(clockCenter);
-    target.draw(hourLine);
-    target.draw(minuteLine);
-    target.draw(secondLine);    
+    target.draw(*analogClock);
 }

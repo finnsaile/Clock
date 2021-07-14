@@ -61,13 +61,13 @@ void CClockNumber::update()
     switch(m_number)
     {
         case 3:
-            m_numberText.move(m_radius - m_radius / 6.4, m_radius / 220);
+            m_numberText.move(m_radius - m_radius / 6.4, 0);
             break;
         case 6:
-            m_numberText.move(- m_radius / 192, m_radius - m_radius / 5.2);
+            m_numberText.move(0, m_radius - m_radius / 5.2);
             break;
         case 9:
-            m_numberText.move(- m_radius + m_radius / 6.4, m_radius / 230);
+            m_numberText.move(- m_radius + m_radius / 6.4, 0);
             break;
         case 12:
             m_numberText.move(m_radius / 230, - m_radius + m_radius / 5.2);

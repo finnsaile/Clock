@@ -23,7 +23,7 @@ int main()
     window.setKeyRepeatEnabled(false);
 
     //Create clock
-    CClock clockObject(window.getSize(), sf::Vector2f(window.getSize().x/2, window.getSize().y/2), sf::Color::Green, true, false);
+    CClock clockObject(window.getSize(), sf::Vector2f(window.getSize().x/2, window.getSize().y/2), sf::Color::Red, true, true);
 
     sf::Event event;
     //window loop

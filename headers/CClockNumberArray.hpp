@@ -7,9 +7,16 @@ class CClockNumberArray : public sf::Drawable
 {
     public: 
         //Constructor takes values needed for elements of number array
-        CClockNumberArray(float radius, float thickness, sf::Vector2f position, sf::Vector2f origin, sf::Color color);
+        CClockNumberArray(const float& radius, const float& thickness, const sf::Vector2f& position, const sf::Color& color);
         virtual ~CClockNumberArray();
+        void update();
     private:
+        //references to variables from clock object
+        const float& m_radius;
+        const float& m_thickness;
+        const sf::Vector2f& m_position;
+        const sf::Color& m_color;
+
         //pointer to number array
         CClockNumber* numberArray;
         //virtual draw function

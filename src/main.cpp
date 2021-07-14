@@ -12,8 +12,10 @@ int main()
     settings.antialiasingLevel = 8;
     //get screen height
     unsigned int heigth = sf::VideoMode::getDesktopMode().height;
+    unsigned int width = sf::VideoMode::getDesktopMode().width;
+    sf::FloatRect visibleArea(0, 0, width, heigth);
     //create non scalable window
-    sf::RenderWindow window(sf::VideoMode(heigth / 2, heigth / 2), "Clock", sf::Style::Titlebar | sf::Style::Close, settings);
+    sf::RenderWindow window(sf::VideoMode(heigth / 2, heigth / 2), "Clock", sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize, settings);
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
     //enable V-Sync
     window.setFramerateLimit(10);
@@ -35,6 +37,12 @@ int main()
                 //close window if close button is pressed
                 case sf::Event::Closed:
                     window.close();
+                    break;
+                case sf::Event::Resized:
+                    visibleArea = sf::FloatRect(0, 0, event.size.width, event.size.height);
+                    window.setView(sf::View(visibleArea));
+                    clockObject.setSize(window.getSize()); 
+                    clockObject.setPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y/2));
                     break;
                 //switch case for key press
                 case sf::Event::KeyPressed:

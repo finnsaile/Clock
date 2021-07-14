@@ -17,7 +17,7 @@ clockColor(color)
 {
     //if digital clock is activated move clock down
     if(digitalClockBool)
-        clockPosition.y += (clockSize.x/20);
+        clockPosition.y += ((clockSize.y < clockSize.x ? clockSize.y : clockSize.x)/20);
     //initialize clock
     initClock();
 }
@@ -34,18 +34,24 @@ CClock::~CClock()
 void CClock::initClock()
 {
     //calculatee clock radius and thickness
-    clockRadius = clockSize.y * 0.4;
-    clockThickness = clockSize.y / 100;
-    
+    if(clockSize.y < clockSize.x)
+    {
+        clockRadius = clockSize.y * 0.4;
+        clockThickness = clockSize.y / 100;
+    }
+    else
+    {
+        clockRadius = clockSize.x * 0.4;
+        clockThickness = clockSize.x / 100;
+    }
 
-    //if digital clock is activated and clock hasn't benn moved already move clock and set offsetBool to true
+    //if digital clock is activated and clock hasn't been moved already move clock and set offsetBool to true
     if(!clockOffsetBool && digitalClockBool)
     {
         clockOffsetBool = true;        
-        clockPosition.y += (clockSize.x/20);
+        clockPosition.y += ((clockSize.y < clockSize.x ? clockSize.y : clockSize.x)/20);
     }
 
-    
     //number Array gets constructed
     if (numberArray != nullptr)
         delete numberArray;
@@ -71,7 +77,7 @@ void CClock::initDigitalClock()
     //set font of clock string
     digitalClock.setFont(digitalClockFont);
     //set char size
-    digitalClock.setCharacterSize(clockSize.y/10);
+    digitalClock.setCharacterSize((clockSize.y < clockSize.x ? clockSize.y : clockSize.x)/10);
     //set color
     digitalClock.setFillColor(clockColor);
     //set dummy string to calculate first origin and position
@@ -79,7 +85,7 @@ void CClock::initDigitalClock()
     //calculate and set origin
     digitalClock.setOrigin(digitalClock.getLocalBounds().width/2, digitalClock.getLocalBounds().height/2);
     //calculate and set position
-    digitalClock.setPosition(clockPosition.x, clockSize.y/20);
+    digitalClock.setPosition(clockPosition.x, clockPosition.y - clockRadius - clockRadius * 0.25);
 }
 
 //initialises clock circle
@@ -208,11 +214,11 @@ bool CClock::getDigitalClockBool()
 void CClock::setDigitalClockBool(bool in)
 {
     digitalClockBool = in;
-    //if digital clock is being turned of, move clock up and set offset bool to false
+    //if digital clock is being turned off, move clock up and set offset bool to false
     if(!digitalClockBool) 
     {
         clockOffsetBool = false;
-        clockPosition.y -= (clockSize.x/20);
+        clockPosition.y -= ((clockSize.y < clockSize.x ? clockSize.y : clockSize.x)/20);
     }
 
     initClock();
@@ -254,6 +260,7 @@ sf::Vector2f CClock::getPosition()
 void CClock::setPosition(sf::Vector2f position)
 {
     clockPosition = position;
+    clockOffsetBool = false;
     initClock();
 }
 

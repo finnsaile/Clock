@@ -1,16 +1,19 @@
 #include "../headers/CDigitalClock.hpp"
 
+using namespace sf;
+using namespace std;
+
 //takes references to variables from clock
-CDigitalClock::CDigitalClock(const sf::Vector2u& clockSize, const sf::Vector2f& clockPosition, const float& clockRadius, const sf::Color& clockColor) :
-m_clockSize(clockSize),
-m_clockPosition(clockPosition),
-m_clockRadius(clockRadius),
-m_clockColor(clockColor)
+CDigitalClock::CDigitalClock(const Vector2u& clockSize, const Vector2f& clockPosition, const float& clockRadius, const Color& clockColor) :
+m_clock_size(clockSize),
+m_clock_position(clockPosition),
+m_clock_radius(clockRadius),
+m_clock_color(clockColor)
 {
     //load font for digital clock
-    m_digitalClockFont.loadFromFile("resources/fonts/digital7_mono.ttf");
+    m_digital_clock_font.loadFromFile("resources/fonts/digital7_mono.ttf");
     //set font of clock string
-    m_digitalClockText.setFont(m_digitalClockFont);
+    m_digital_clock_text.setFont(m_digital_clock_font);
     //update digital clock to initialize all values
     update();
 }
@@ -19,43 +22,43 @@ m_clockColor(clockColor)
 void CDigitalClock::update()
 {
     //set character size depending on width and height of clock
-    m_digitalClockText.setCharacterSize((m_clockSize.y < m_clockSize.x ? m_clockSize.y : m_clockSize.x)/10);
+    m_digital_clock_text.setCharacterSize((m_clock_size.y < m_clock_size.x ? m_clock_size.y : m_clock_size.x)/10);
     //set fill color of digital clock
-    m_digitalClockText.setFillColor(m_clockColor);
+    m_digital_clock_text.setFillColor(m_clock_color);
     //set initial string so postition and origin of digital clock will be correct
-    m_digitalClockText.setString("00:00:00");
+    m_digital_clock_text.setString("00:00:00");
     //calculate and set origin
-    m_digitalClockText.setOrigin(m_digitalClockText.getLocalBounds().width/2, m_digitalClockText.getLocalBounds().height/2);
+    m_digital_clock_text.setOrigin(m_digital_clock_text.getLocalBounds().width/2, m_digital_clock_text.getLocalBounds().height/2);
     //calculate and set position
-    m_digitalClockText.setPosition(m_clockPosition.x, m_clockPosition.y - m_clockRadius - m_clockRadius * 0.25);
+    m_digital_clock_text.setPosition(m_clock_position.x, m_clock_position.y - m_clock_radius - m_clock_radius * 0.25);
 }
 
 //updates time of digital clock
 void CDigitalClock::tick()
 {
     //get time passed since 1970 or smth
-    m_passedTime = std::time(0);
+    m_passed_time = time(0);
     //convert to tm localtime
-    m_timeNow = std::localtime(&m_passedTime);
+    m_time_now = localtime(&m_passed_time);
 
     //set string for digital clock using timestruct
-    std::string digitalString = std::to_string(m_timeNow->tm_hour) + ":" + std::to_string(m_timeNow->tm_min) + ":" + std::to_string(m_timeNow->tm_sec);
+    string digitalString = to_string(m_time_now->tm_hour) + ":" + to_string(m_time_now->tm_min) + ":" + to_string(m_time_now->tm_sec);
     //add 0 if hour has only one digit 
-    if (m_timeNow->tm_hour < 10)
+    if (m_time_now->tm_hour < 10)
         digitalString = "0" + digitalString;
     //add 0 if minute value has only one digit
-    if (m_timeNow->tm_min < 10)
+    if (m_time_now->tm_min < 10)
         digitalString.insert(3, "0");
     //add 0 if second value has only one digit
-    if (m_timeNow->tm_sec < 10)
+    if (m_time_now->tm_sec < 10)
         digitalString.insert(6, "0");
     //set string for digital clock
-    m_digitalClockText.setString(digitalString);
+    m_digital_clock_text.setString(digitalString);
 }
 
 //draw digital clock
-void CDigitalClock::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void CDigitalClock::draw(RenderTarget& target, RenderStates states) const
 {
-    target.draw(m_digitalClockText);
+    target.draw(m_digital_clock_text);
 }
 

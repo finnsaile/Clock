@@ -16,24 +16,24 @@ class CAnalogClock : public sf::Drawable
         void update();
     private: 
         //references to clock variables
-        const bool& m_smoothClockBool;
-        const float& m_clockThickness;
-        const sf::Vector2f& m_clockPosition;
-        const float& m_clockRadius;
-        const sf::Color& m_clockColor;
+        const bool& m_smooth_clock_bool;
+        const float& m_clock_thickness;
+        const sf::Vector2f& m_clock_position;
+        const float& m_clock_radius;
+        const sf::Color& m_clock_color;
 
         //variable for calculating time
-        std::time_t m_passedTime;
-        std::tm* m_timeNow;
+        std::time_t m_passed_time;
+        std::tm* m_time_now;
 
         //center and circle for analog clock
-        sf::CircleShape clockCircle;
-        sf::CircleShape clockCenter;
+        sf::CircleShape m_clock_circle;
+        sf::CircleShape m_clock_center;
 
         //lines for analog clock
-        sf::RectangleShape hourLine;
-        sf::RectangleShape minuteLine;
-        sf::RectangleShape secondLine;
+        sf::RectangleShape m_hour_line;
+        sf::RectangleShape m_minute_line;
+        sf::RectangleShape m_second_line;
 
         //functions to initialize all elements of analog clock
         void initClockCircle();

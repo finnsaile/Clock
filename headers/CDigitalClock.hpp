@@ -17,18 +17,18 @@ class CDigitalClock : public sf::Drawable
         
     private:
         //references to store all variables from clock  
-        const sf::Vector2u& m_clockSize;
-        const sf::Vector2f& m_clockPosition;
-        const float& m_clockRadius;
-        const sf::Color& m_clockColor;
+        const sf::Vector2u& m_clock_size;
+        const sf::Vector2f& m_clock_position;
+        const float& m_clock_radius;
+        const sf::Color& m_clock_color;
 
         //time variables to get current time
-        std::time_t m_passedTime;
-        tm* m_timeNow;
+        std::time_t m_passed_time;
+        tm* m_time_now;
 
         //font and string for digital clock
-        sf::Font m_digitalClockFont;
-        sf::Text m_digitalClockText;
+        sf::Font m_digital_clock_font;
+        sf::Text m_digital_clock_text;
 
         //draw function to draw clock
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

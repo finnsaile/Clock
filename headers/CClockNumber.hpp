@@ -2,7 +2,6 @@
 #include <SFML/Graphics.hpp>
 #include <string>
 #include <math.h>
-#define PI 3.14159265
 
 class CClockNumber : public sf::Drawable
 {
@@ -12,7 +11,7 @@ class CClockNumber : public sf::Drawable
         //update origin and position of both lines 
         void update();
         //set color of lines and numbers
-        void setColor(sf::Color color);
+        void setColor(sf::Color);
         //set rotation of both lines
         void setRotation(int);
         //getter function returns rotation
@@ -38,9 +37,9 @@ class CClockNumber : public sf::Drawable
     private:
         //variables for number and number string
         unsigned int m_number;
-        sf::Text m_numberText;
-        sf::Font m_numberFont;
-        sf::Color numberColor;
+        sf::Text m_number_text;
+        sf::Font m_number_font;
+        sf::Color m_number_color;
         //static variable to save position of all elements
         static sf::Vector2f m_position;
         //static variable to save origin of all elements
@@ -50,7 +49,7 @@ class CClockNumber : public sf::Drawable
         //variable to save rotation, differs for every elements
         int m_rotation;
         //two rectangles one to display, one to cover unwanted part
-        sf::RectangleShape mainRect;
+        sf::RectangleShape m_line;
         //virtual draw function
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };

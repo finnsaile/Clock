@@ -31,20 +31,20 @@ class CClock : public sf::Drawable
     private:
 
         //Array Object for 12 numbers
-        CClockNumberArray *numberArray;
+        CClockNumberArray *m_number_array;
         //both clock objects
-        CDigitalClock* digitalClock;
-        CAnalogClock* analogClock;
+        CDigitalClock* m_digital_clock;
+        CAnalogClock* m_analog_clock;
         
         //variables for calculating correct position, size and origin of elements
-        bool clockOffsetBool;
-        bool digitalClockBool;
-        bool smoothClockBool;
-        float clockRadius;
-        float clockThickness;
-        sf::Vector2u clockSize;
-        sf::Vector2f clockPosition;
-        sf::Color clockColor;
+        bool m_clock_offset_bool;
+        bool m_digital_clock_bool;
+        bool m_smooth_clock_bool;
+        float m_clock_radius;
+        float m_clock_thickness;
+        sf::Vector2u m_clock_size;
+        sf::Vector2f m_clock_position;
+        sf::Color m_clock_color;
 
         //returns either width or heigh of of clock size depending on which is smaller
         unsigned int calcSize();

@@ -18,7 +18,7 @@ class CClockNumberArray : public sf::Drawable
         const sf::Color& m_color;
 
         //pointer to number array
-        CClockNumber* numberArray;
+        CClockNumber* m_number_array;
         //virtual draw function
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };

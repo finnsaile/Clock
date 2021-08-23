@@ -2,30 +2,43 @@
 #include <iostream>
 #include "../headers/CClock.hpp"
 
+using namespace sf;
+using namespace std;
+
+void colorCycle(CClock& clock);
+
+Color colorArray[] = 
+{  
+    Color::Green,
+    Color::Blue,
+    Color::Red,
+    Color::Magenta,
+    Color::Cyan,
+    Color::Yellow
+};
 
 int main()
 {
     //antialiasing 
-    sf::Image icon;
+    Image icon;
     icon.loadFromFile("resources/icons/clock_icon.png");
-    sf::ContextSettings settings;
+    ContextSettings settings;
     settings.antialiasingLevel = 8;
     //get screen height
-    unsigned int heigth = sf::VideoMode::getDesktopMode().height;
-    unsigned int width = sf::VideoMode::getDesktopMode().width;
-    sf::FloatRect visibleArea(0, 0, width, heigth);
+    unsigned int heigth = VideoMode::getDesktopMode().height;
+    unsigned int width = VideoMode::getDesktopMode().width;
+    FloatRect visibleArea(0, 0, width, heigth);
     //create non scalable window
-    sf::RenderWindow window(sf::VideoMode(heigth / 2, heigth / 2), "Clock", sf::Style::Titlebar | sf::Style::Close | sf::Style::Resize, settings);
+    RenderWindow window(VideoMode(heigth / 2, heigth / 2), "Clock", Style::Titlebar | Style::Close | Style::Resize, settings);
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
     //enable V-Sync
     window.setFramerateLimit(10);
     //disable repeat key press on hold
-    window.setKeyRepeatEnabled(false);
-
+    window.setKeyRepeatEnabled(true);
     //Create clock
-    CClock clockObject(window.getSize(), sf::Vector2f(window.getSize().x/2, window.getSize().y/2), sf::Color::Red, true, true);
+    CClock clockObject(window.getSize(), Vector2f(window.getSize().x/2, window.getSize().y/2), Color::Red, true, true);
 
-    sf::Event event;
+    Event event;
     //window loop
     while (window.isOpen())
     {
@@ -35,55 +48,34 @@ int main()
             switch(event.type)
             {
                 //close window if close button is pressed
-                case sf::Event::Closed:
+                case Event::Closed:
                     window.close();
                     break;
-                case sf::Event::Resized:
-                    visibleArea = sf::FloatRect(0, 0, event.size.width, event.size.height);
-                    window.setView(sf::View(visibleArea));
+                case Event::Resized:
+                    visibleArea = FloatRect(0, 0, event.size.width, event.size.height);
+                    window.setView(View(visibleArea));
                     clockObject.setSize(window.getSize()); 
-                    clockObject.setPosition(sf::Vector2f(window.getSize().x/2, window.getSize().y/2));
+                    clockObject.setPosition(Vector2f(window.getSize().x/2, window.getSize().y/2));
                     break;
                 //switch case for key press
-                case sf::Event::KeyPressed:
+                case Event::KeyPressed:
                     switch(event.key.code)
                     {
                         //close window if ESC is pressed
-                        case sf::Keyboard::Escape:
+                        case Keyboard::Escape:
                             window.close(); 
                             break;
                         //change smooth mode if R is pressed
-                        case sf::Keyboard::R:
-                        
-                            if(clockObject.getSmoothClockBool() == false) 
-                                clockObject.setSmoothClockBool(true);
-                            else   
-                                clockObject.setSmoothClockBool(false); 
+                        case Keyboard::R:
+                            clockObject.setSmoothClockBool(!clockObject.getSmoothClockBool());
                             break;
                         //change smooth mode if R is pressed
-                        case sf::Keyboard::E:
-                            
-                            if(clockObject.getDigitalClockBool() == false) 
-                                clockObject.setDigitalClockBool(true);
-                            else   
-                                clockObject.setDigitalClockBool(false); 
+                        case Keyboard::E:
+                            clockObject.setDigitalClockBool(!clockObject.getDigitalClockBool());
                             break;
                         
-                        case sf::Keyboard::C:                            
-                            if(clockObject.getColor() == sf::Color::Green) 
-                                clockObject.setColor(sf::Color::Blue);
-                            else if(clockObject.getColor() == sf::Color::Blue)   
-                                clockObject.setColor(sf::Color::Red); 
-                            else if(clockObject.getColor() == sf::Color::Red)   
-                                clockObject.setColor(sf::Color::Magenta); 
-                            else if(clockObject.getColor() == sf::Color::Magenta)   
-                            
-                                clockObject.setColor(sf::Color::Cyan); 
-                            else if(clockObject.getColor() == sf::Color::Cyan)   
-                                clockObject.setColor(sf::Color::Yellow); 
-                            else if(clockObject.getColor() == sf::Color::Yellow)   
-                                clockObject.setColor(sf::Color::Green); 
-
+                        case Keyboard::C:    
+                            colorCycle(clockObject);                        
                             break;
 
                         default:
@@ -96,7 +88,7 @@ int main()
         //call window tick from window object
         clockObject.clockTick();
         //clear window
-        window.clear(sf::Color::Transparent);
+        window.clear(Color::Transparent);
         //draw clock
         window.draw(clockObject);
         //display everything
@@ -105,3 +97,13 @@ int main()
     return 0;  
 }
 
+//function to change color
+void colorCycle(CClock& clock)
+{
+    //use static counter to keep index through different function calls
+    static int counter = 0;
+    //set color to current counter index
+    clock.setColor(colorArray[counter]);
+    //increase the counter by one as long as it is not larger than the amount of colors in the array
+    counter = (++counter) % (sizeof(colorArray)/sizeof(colorArray[0]));
+}
